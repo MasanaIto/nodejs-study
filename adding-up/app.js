@@ -1,3 +1,5 @@
+// 2010年から 2015年にかけて 15〜19歳の人が増えた割合の 都道府県ランキング
+
 'use strict';
 // モジュール呼び出し
 const fs = require('fs');
@@ -43,7 +45,19 @@ rl.on('line', lineString => {
 rl.on('close', () => {
     for (const [key, value] of prefectureDataMap) {
         // 人口の変化率
-        value.cahnge = value.popu15 / value.popu10;
+        value.change = value.popu15 / value.popu10;
     }
-    console.log(prefectureDataMap);
+    // 変化率ごとに並び替える
+    // Array.from()...Mapを普通の配列に変換
+    const rankingArray = Array.from(prefectureDataMap).sort((pair1, pair2) => {
+        return pair2[1].change - pair1[1].change;
+    });
+    
+    // map関数[配列.map(関数)]...Arrayの要素それぞれを、与えられた関数を適用した内容に変換する
+    const rankingStrings = rankingArray.map(([key, value]) => {
+        return (
+            key + ': ' + value.popu10 + '=>' + value.popu15 + ' 変化率:' + value.change
+        );
+    });
+    console.log(rankingStrings);
 });
